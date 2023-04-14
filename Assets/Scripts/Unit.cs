@@ -6,6 +6,14 @@ public class Unit : MonoBehaviour
 {
 	private Vector3 _targetPosition;
 
+	private void Reset()
+	{
+		if (FindObjectOfType<MouseWorld>() == null)
+		{
+			new GameObject("Mouse World").AddComponent<MouseWorld>();
+		}
+	}
+
 	private void Update()
 	{
 		const float stoppingDistance = .01f;

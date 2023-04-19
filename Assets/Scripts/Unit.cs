@@ -2,36 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+namespace SW
 {
-	private Vector3 _targetPosition;
-
-	private void Reset()
+	[RequireComponent(typeof(MouseWorld))]
+	public class Unit : MonoBehaviour
 	{
-		if (FindObjectOfType<MouseWorld>() == null)
+		private MouseWorld _mouse;
+		private Vector3 _targetPosition;
+
+		private void Awake()
 		{
-			new GameObject("Mouse World").AddComponent<MouseWorld>();
+			_mouse = GetComponent<MouseWorld>();
 		}
-	}
 
-	private void Update()
-	{
-		const float stoppingDistance = .01f;
-		const float moveSpeed = 4f;
-		if (Vector3.Distance(_targetPosition, transform.position) > stoppingDistance)
+		private void Update()
 		{
-			Vector3 moveDirection = (_targetPosition - transform.position).normalized;
-			transform.position += moveSpeed * Time.deltaTime * moveDirection;
+			const float stoppingDistance = .1f;
+			const float moveSpeed = 4f;
+			if (Vector3.Distance(_targetPosition, transform.position) > stoppingDistance)
+			{
+				Vector3 moveDirection = (_targetPosition - transform.position).normalized;
+				transform.position += moveSpeed * Time.deltaTime * moveDirection;
+			}
+			else
+				transform.position = _targetPosition;
+
+			if (Input.GetMouseButton(0))
+				Move(_mouse.WorldPosition);
 		}
-		else
-			transform.position = _targetPosition;
 
-		if (Input.GetKeyDown(KeyCode.Space))
-			Move(new Vector3(4, 0, 4));
-	}
-
-	private void Move(Vector3 targetPosition)
-	{
-		_targetPosition = targetPosition;
+		private void Move(Vector3 targetPosition)
+		{
+			_targetPosition = targetPosition;
+		}
 	}
 }

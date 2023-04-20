@@ -4,36 +4,53 @@ using UnityEngine;
 
 namespace SW
 {
-	[RequireComponent(typeof(MouseWorld))]
 	public class Unit : MonoBehaviour
 	{
-		private MouseWorld _mouse;
+		[SerializeField] private Animator _animator;
+
+		public bool IsMoving { get; private set; }
+
 		private Vector3 _targetPosition;
 
 		private void Awake()
 		{
-			_mouse = GetComponent<MouseWorld>();
+			_targetPosition = transform.position;
 		}
 
 		private void Update()
 		{
 			const float stoppingDistance = .1f;
 			const float moveSpeed = 4f;
+			const float rotationSpeed = 10f;
+
 			if (Vector3.Distance(_targetPosition, transform.position) > stoppingDistance)
 			{
+				IsMoving = true;
 				Vector3 moveDirection = (_targetPosition - transform.position).normalized;
 				transform.position += moveSpeed * Time.deltaTime * moveDirection;
-			}
-			else
-				transform.position = _targetPosition;
+				UpdateAnimator();
 
-			if (Input.GetMouseButton(0))
-				Move(_mouse.WorldPosition);
+				transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
+			}
+			else if (IsMoving)
+			{
+				IsMoving = false;
+				transform.position = _targetPosition;
+				UpdateAnimator();
+			}
 		}
 
-		private void Move(Vector3 targetPosition)
+		public void Move(Vector3 targetPosition)
 		{
 			_targetPosition = targetPosition;
+		}
+
+		private void UpdateAnimator()
+		{
+			const string isWalking = "IsWalking";
+
+			if (_animator)
+				_animator.SetBool(isWalking, IsMoving);
 		}
 	}
 }

@@ -34,6 +34,7 @@ namespace SW
 		private void Awake()
 		{
 			CheckInstancesInScene();
+			SelectedUnit = _selectedUnit;
 			_mouse = GetComponent<MouseWorld>();
 		}
 

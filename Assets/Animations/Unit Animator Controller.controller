@@ -29,7 +29,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Aiming Rifle Idle
+  m_Name: Rifle Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -43,7 +43,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: b278ece40b398b74287212e1e5edcae7,
+  m_Motion: {fileID: -203655887218126122, guid: 1c3a274343ffa9b4189cba2c367fe13a,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -176,7 +176,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d4bac82f27f04e4489e4268887feb1d5, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: 0c54709e45d376c47b1def268ca697f1,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -203,7 +204,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c5dcc72be0bc3aa469dcbb471775fcbc, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: bfd7ae33b9781d1418f88818325acf73,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

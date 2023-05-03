@@ -783,6 +783,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46ce99dac514d234fbfdb38d89471840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _virtualCamera: {fileID: 2121589168}
+  _invertZoom: 0
 --- !u!114 &1487006590 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6689245158222534184, guid: 5aaaaff014aea884cbaa872099a31211,

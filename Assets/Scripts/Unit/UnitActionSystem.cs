@@ -66,8 +66,11 @@ namespace SW
 			{
 				if (hitInfo.transform.TryGetComponent(out Unit unit))
 				{
-					SelectedUnit = unit;
-					result = true;
+					if (_selectedUnit != unit)
+					{
+						SelectedUnit = unit;
+						result = true;
+					}
 				}
 			}
 
@@ -77,7 +80,8 @@ namespace SW
 		private void TryMoveSelectedUnit()
 		{
 			if (_selectedUnit)
-				_selectedUnit.Move(_mouse.WorldPosition);
+				if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
+					moveAction.Move(_mouse.WorldPosition);
 		}
 	}
 }

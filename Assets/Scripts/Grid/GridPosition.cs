@@ -38,14 +38,24 @@ namespace SW.Grid
 			return $"({x}, {z})";
 		}
 
-		public static bool operator ==(GridPosition lhs, GridPosition rhs)
+		public static bool operator ==(GridPosition a, GridPosition b)
 		{
-			return lhs.x == rhs.x && lhs.z == rhs.z ;
+			return a.x == b.x && a.z == b.z ;
 		}
 
-		public static bool operator !=(GridPosition lhs, GridPosition rhs)
+		public static bool operator !=(GridPosition a, GridPosition b)
 		{
-			return !(lhs == rhs);
+			return !(a == b);
+		}
+
+		public static GridPosition operator +(GridPosition a, GridPosition b)
+		{
+			return new(a.x + b.x, a.z + b.z);
+		}
+
+		public static GridPosition operator -(GridPosition a, GridPosition b)
+		{
+			return new(a.x - b.x, a.z - b.z);
 		}
 	}
 }

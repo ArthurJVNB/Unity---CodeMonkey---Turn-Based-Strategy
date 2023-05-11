@@ -22,6 +22,8 @@ namespace SW
 			get
 			{
 				_validGridPositions ??= new();
+				_validGridPositions.Clear();
+
 				GridPosition currentGridPosition = _unit.CurrentGridPosition;
 
 				for (int x = -_maxMoveDistance; x < _maxMoveDistance + 1; x++)

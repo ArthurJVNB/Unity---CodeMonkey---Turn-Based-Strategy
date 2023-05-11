@@ -81,7 +81,11 @@ namespace SW
 		{
 			if (_selectedUnit)
 				if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
-					moveAction.Move(_mouse.WorldPosition);
+				{
+					bool couldMove = moveAction.Move(_mouse.WorldPosition);
+					Debug.Log($"{_selectedUnit} {(couldMove ? "could move" : "could not move")}");
+				}
+					
 		}
 	}
 }

@@ -52,7 +52,6 @@ namespace SW.Grid
 
 		private void GridObject_OnUnitChanged(GridObject _)
 		{
-			Debug.Log("Changed unit");
 			UpdateText();
 		}
 

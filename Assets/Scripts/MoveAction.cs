@@ -17,7 +17,6 @@ namespace SW
 
 		public bool IsMoving { get; private set; }
 
-
 		public List<GridPosition> ValidGridPositions
 		{
 			get
@@ -30,8 +29,18 @@ namespace SW
 					for (int z = -_maxMoveDistance; z < _maxMoveDistance + 1; z++)
 					{
 						GridPosition offset = new(x, z);
-						GridPosition test = currentGridPosition + offset;
-						Debug.Log(test);
+						GridPosition target = currentGridPosition + offset;
+
+						if (!LevelGrid.IsValidGridPosition(target))
+							continue;
+
+						if (target == _unit.CurrentGridPosition)
+							continue;
+
+						if (LevelGrid.HasAnyUnitAtGridPosition(target))
+							continue;
+
+						_validGridPositions.Add(target);
 					}
 				}
 
@@ -39,6 +48,10 @@ namespace SW
 			}
 		}
 
+		public bool IsValidPosition(GridPosition gridPosition)
+		{
+			return ValidGridPositions.Contains(gridPosition);
+		}
 
 		private void Awake()
 		{
@@ -56,11 +69,25 @@ namespace SW
 			{
 				IsMoving = true;
 				Vector3 moveDirection = (_targetPosition - transform.position).normalized;
-				transform.position += moveSpeed * Time.deltaTime * moveDirection;
+
+				//// Movement
+				//transform.position += moveSpeed * Time.deltaTime * moveDirection;
+
+				//// Old Rotation (bugged if doing a perfect 180º rotation)
+				//transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
+
+				//// New Rotation
+				//transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), rotationSpeed * Time.deltaTime);
+
+				// Optimized Movement and Rotation Lerping
+				transform.SetLocalPositionAndRotation(transform.position + moveSpeed * Time.deltaTime * moveDirection,
+										  Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), rotationSpeed * Time.deltaTime));
+
 				UpdateAnimator();
 				_unit.UpdateGridPosition();
 
-				transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
+				Debug.DrawLine(transform.position, transform.position + transform.forward * moveSpeed, Color.blue, .1f);
+				Debug.DrawLine(transform.position, transform.position + moveDirection * moveSpeed, Color.green, .1f);
 			}
 			else if (IsMoving)
 			{
@@ -71,9 +98,20 @@ namespace SW
 			}
 		}
 
-		public void Move(Vector3 targetPosition)
+		public bool Move(Vector3 targetPosition)
 		{
-			_targetPosition = targetPosition;
+			return Move(LevelGrid.GetGridPosition(targetPosition));
+		}
+
+		public bool Move(GridPosition targetGridPosition)
+		{
+			if (IsValidPosition(targetGridPosition))
+			{
+				_targetPosition = LevelGrid.GetWorldPosition(targetGridPosition);
+				return true;
+			}
+
+			return false;
 		}
 
 		private void UpdateAnimator()

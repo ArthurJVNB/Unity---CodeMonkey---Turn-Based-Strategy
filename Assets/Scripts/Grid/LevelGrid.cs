@@ -33,19 +33,22 @@ namespace SW.Grid
 				_instance = value;
 			}
 		}
+
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+		private static void ResetInstance() => _instance = null;
 		#endregion
 
 		[SerializeField] private GridDebugObject _gridDebugObjectPrefab;
 
-		private GridSystem _grid;
+		private GridSystem _gridSystem;
 
 		private void Awake()
 		{
 			Instance = this;
-			_grid = new(10, 10, 2);
+			_gridSystem = new(10, 10, 2);
 
 			if (_gridDebugObjectPrefab)
-				_grid.CreateDebugObjects(_gridDebugObjectPrefab);
+				_gridSystem.CreateDebugObjects(_gridDebugObjectPrefab);
 		}
 
 		private void OnDestroy()
@@ -54,27 +57,43 @@ namespace SW.Grid
 				_instance = null;
 		}
 
+		public static bool IsValidGridPosition(GridPosition gridPosition)
+		{
+			return Instance._gridSystem.IsValidGridPosition(gridPosition);
+		}
+
+		public static bool HasAnyUnitAtGridPosition(GridPosition gridPosition)
+		{
+			if (!Instance._gridSystem.IsValidGridPosition(gridPosition))
+				return false;
+			return Instance._gridSystem.GetGridObject(gridPosition).HasAnyUnit;
+		}
+
 		public static List<Unit> GetUnitsAtGridPosition(GridPosition gridPosition)
 		{
-			//return Instance._grid.GetGridObject(gridPosition).Unit;
-			return Instance._grid.GetGridObject(gridPosition).Units;
+			if (Instance._gridSystem.IsValidGridPosition(gridPosition))
+				return Instance._gridSystem.GetGridObject(gridPosition).Units;
+			return new();
 		}
 
 		public static void AddUnitAtGridPosition(Unit unit, GridPosition gridPosition)
 		{
-			//Instance._grid.GetGridObject(gridPosition).Unit = unit;
-			Instance._grid.GetGridObject(gridPosition).AddUnit(unit);
+			Instance._gridSystem.GetGridObject(gridPosition).AddUnit(unit);
 		}
 
 		public static void RemoveUnitAtGridPosition(Unit unit, GridPosition gridPosition)
 		{
-			//Instance._grid.GetGridObject(gridPosition).Unit = null;
-			Instance._grid.GetGridObject(gridPosition).RemoveUnit(unit);
+			Instance._gridSystem.GetGridObject(gridPosition).RemoveUnit(unit);
 		}
 
 		public static GridPosition GetGridPosition(Vector3 worldPosition)
 		{
-			return Instance._grid.GetGridPosition(worldPosition);
+			return Instance._gridSystem.GetGridPosition(worldPosition);
+		}
+
+		public static Vector3 GetWorldPosition(GridPosition gridPosition)
+		{
+			return Instance._gridSystem.GetWorldPosition(gridPosition);
 		}
 
 		public static void MoveUnitGridPosition(Unit unit, GridPosition from, GridPosition to)

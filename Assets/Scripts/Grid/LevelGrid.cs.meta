@@ -3,7 +3,9 @@ guid: ad58bcad19a337243a1a484aa03fef14
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _gridDebugObjectPrefab: {fileID: 4750103639341063396, guid: 8d1b9b7191181d348908332101728e71,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -13,16 +13,6 @@ namespace SW.Grid
 		private GridPosition _gridPosition;
 		private List<Unit> _units;
 
-		//public Unit Unit
-		//{
-		//	get => _unit;
-		//	set
-		//	{
-		//		_unit = value;
-		//		OnUnitChanged?.Invoke(this);
-		//	}
-		//}
-
 		public List<Unit> Units => _units;
 
 		public GridObject(GridSystem gridSystem, GridPosition gridPosition)
@@ -36,7 +26,9 @@ namespace SW.Grid
 		{
 			new GridObject(gridSystem, new GridPosition(x, z));
 		}
-		
+
+		public bool HasAnyUnit => _units.Count > 0;
+
 		public void AddUnit(Unit unit)
 		{
 			_units.Add(unit);

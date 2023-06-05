@@ -10,10 +10,7 @@ namespace SW.Grid
 		private static LevelGrid _instance;
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-		private static void Init()
-		{
-			_instance = null;
-		}
+		private static void Init() => _instance = null;
 
 		public static LevelGrid Instance
 		{
@@ -33,11 +30,12 @@ namespace SW.Grid
 				_instance = value;
 			}
 		}
-
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-		private static void ResetInstance() => _instance = null;
 		#endregion
 
+		[SerializeField] private int _width = 10;
+		[SerializeField] private int _height = 10;
+		[Tooltip("Cell size in meters")]
+		[SerializeField] private int _cellSize = 2;
 		[SerializeField] private GridDebugObject _gridDebugObjectPrefab;
 
 		private GridSystem _gridSystem;
@@ -45,7 +43,7 @@ namespace SW.Grid
 		private void Awake()
 		{
 			Instance = this;
-			_gridSystem = new(10, 10, 2);
+			_gridSystem = new(_width, _height, _cellSize);
 
 			if (_gridDebugObjectPrefab)
 				_gridSystem.CreateDebugObjects(_gridDebugObjectPrefab);

@@ -55,6 +55,12 @@ namespace SW.Grid
 				_instance = null;
 		}
 
+		public static int GridWidth => Instance._gridSystem.Width;
+
+		public static int GridHeight => Instance._gridSystem.Height;
+
+		public static int GridCellSize => Instance._cellSize;
+
 		public static bool IsValidGridPosition(GridPosition gridPosition)
 		{
 			return Instance._gridSystem.IsValidGridPosition(gridPosition);
@@ -99,5 +105,6 @@ namespace SW.Grid
 			RemoveUnitAtGridPosition(unit, from);
 			AddUnitAtGridPosition(unit, to);
 		}
+
 	}
 }

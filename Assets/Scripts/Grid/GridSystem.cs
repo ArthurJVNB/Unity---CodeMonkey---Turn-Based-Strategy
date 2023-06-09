@@ -6,9 +6,9 @@ namespace SW.Grid
 {
 	public class GridSystem
 	{
-		public int Width;
-		public int Height;
-		public float CellSize;
+		public int Width { get; private set; }
+		public int Height { get; private set; }
+		public float CellSize { get; private set; }
 
 		private readonly GridObject[,] _gridObjects;
 

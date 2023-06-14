@@ -45,6 +45,11 @@ namespace SW
 				if (TrySelectUnit()) return;
 				TryMoveSelectedUnit();
 			}
+
+			if (Input.GetMouseButtonDown(1))
+			{
+				TrySpinSelectedUnit();
+			}
 		}
 
 		private void CheckInstancesInScene()
@@ -81,11 +86,14 @@ namespace SW
 		{
 			if (_selectedUnit)
 				if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
-				{
-					bool couldMove = moveAction.Move(_mouse.WorldPosition);
-					Debug.Log($"{_selectedUnit} {(couldMove ? "could move" : "could not move")}");
-				}
-					
+					moveAction.Move(_mouse.WorldPosition);
+		}
+
+		private void TrySpinSelectedUnit()
+		{
+			if (_selectedUnit)
+				if (_selectedUnit.TryGetComponent(out SpinAction spinAction))
+					spinAction.Spin();
 		}
 	}
 }

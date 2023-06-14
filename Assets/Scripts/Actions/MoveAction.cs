@@ -1,4 +1,5 @@
 using SW.Grid;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +7,11 @@ using UnityEngine;
 namespace SW
 {
 	[RequireComponent(typeof(Unit))]
-	public class MoveAction : MonoBehaviour
+	public class MoveAction : BaseAction
 	{
 		[SerializeField] private Animator _animator;
 		[SerializeField] private int _maxMoveDistance = 4;
 
-		private Unit _unit;
 		private Vector3 _targetPosition;
 		private List<GridPosition> _validGridPositions;
 
@@ -55,9 +55,9 @@ namespace SW
 			return ValidGridPositions.Contains(gridPosition);
 		}
 
-		private void Awake()
+		protected override void Awake()
 		{
-			_unit = GetComponent<Unit>();
+			base.Awake();
 			_targetPosition = transform.position;
 		}
 
@@ -98,6 +98,8 @@ namespace SW
 				UpdateAnimator();
 				_unit.UpdateGridPosition();
 			}
+			else
+				enabled = false;
 		}
 
 		public bool Move(Vector3 targetPosition)
@@ -110,6 +112,7 @@ namespace SW
 			if (IsValidPosition(targetGridPosition))
 			{
 				_targetPosition = LevelGrid.GetWorldPosition(targetGridPosition);
+				enabled = true;
 				return true;
 			}
 

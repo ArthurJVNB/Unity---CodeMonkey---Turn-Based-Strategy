@@ -63,6 +63,12 @@ namespace SW
 
 		private void Update()
 		{
+			if (!IsActive)
+			{
+				enabled = false;
+				return;
+			}
+
 			const float stoppingDistance = .1f;
 			const float moveSpeed = 4f;
 			const float rotationSpeed = 10f;
@@ -99,16 +105,19 @@ namespace SW
 				_unit.UpdateGridPosition();
 			}
 			else
-				enabled = false;
+				CompleteAction();
+
 		}
 
-		public bool Move(Vector3 targetPosition)
+		public bool Move(Vector3 targetPosition, Action onActionComplete)
 		{
-			return Move(LevelGrid.GetGridPosition(targetPosition));
+			return Move(LevelGrid.GetGridPosition(targetPosition), onActionComplete);
 		}
 
-		public bool Move(GridPosition targetGridPosition)
+		public bool Move(GridPosition targetGridPosition, Action onActionComplete)
 		{
+			StartAction(onActionComplete);
+
 			if (IsValidPosition(targetGridPosition))
 			{
 				_targetPosition = LevelGrid.GetWorldPosition(targetGridPosition);
@@ -116,6 +125,7 @@ namespace SW
 				return true;
 			}
 
+			CompleteAction();
 			return false;
 		}
 
@@ -125,6 +135,12 @@ namespace SW
 
 			if (_animator)
 				_animator.SetBool(b_isWalking, IsMoving);
+		}
+
+		protected override void CompleteAction()
+		{
+			base.CompleteAction();
+			enabled = false;
 		}
 	}
 }

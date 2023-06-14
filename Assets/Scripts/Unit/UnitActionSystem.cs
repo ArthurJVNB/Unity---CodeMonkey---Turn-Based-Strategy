@@ -14,6 +14,7 @@ namespace SW
 		[SerializeField] private Unit _selectedUnit;
 
 		private MouseWorld _mouse;
+		private bool _isBusy = false;
 
 		public Unit SelectedUnit
 		{
@@ -40,6 +41,8 @@ namespace SW
 
 		private void Update()
 		{
+			if (_isBusy) return;
+
 			if (Input.GetMouseButtonDown(0))
 			{
 				if (TrySelectUnit()) return;
@@ -51,6 +54,10 @@ namespace SW
 				TrySpinSelectedUnit();
 			}
 		}
+
+		private void SetBusy() => _isBusy = true;
+
+		private void ClearBusy() => _isBusy = false;
 
 		private void CheckInstancesInScene()
 		{
@@ -86,14 +93,20 @@ namespace SW
 		{
 			if (_selectedUnit)
 				if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
-					moveAction.Move(_mouse.WorldPosition);
+				{
+					SetBusy();
+					moveAction.Move(_mouse.WorldPosition, ClearBusy);
+				}
 		}
 
 		private void TrySpinSelectedUnit()
 		{
 			if (_selectedUnit)
 				if (_selectedUnit.TryGetComponent(out SpinAction spinAction))
-					spinAction.Spin();
+				{
+					SetBusy();
+					spinAction.Spin(ClearBusy);
+				}
 		}
 	}
 }

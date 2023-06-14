@@ -10,6 +10,7 @@ namespace SW
 	{
 		public static event EventHandler OnChangedSelectedUnit;
 		public static Unit CurrentSelectedUnit { get; private set; }
+		public static BaseAction[] CurrentActions { get; private set; }
 
 		[SerializeField] private Unit _selectedUnit;
 
@@ -23,6 +24,7 @@ namespace SW
 			{
 				_selectedUnit = value;
 				CurrentSelectedUnit = value;
+				CurrentActions = value.GetComponents<BaseAction>();
 				OnChangedSelectedUnit?.Invoke(this, EventArgs.Empty);
 			}
 		}

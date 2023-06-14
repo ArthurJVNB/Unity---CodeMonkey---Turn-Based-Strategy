@@ -50,6 +50,8 @@ namespace SW
 			}
 		}
 
+		public override string Name => "Move";
+
 		public bool IsValidPosition(GridPosition gridPosition)
 		{
 			return ValidGridPositions.Contains(gridPosition);

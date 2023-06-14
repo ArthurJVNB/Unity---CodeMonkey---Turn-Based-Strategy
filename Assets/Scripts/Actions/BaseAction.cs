@@ -14,6 +14,8 @@ namespace SW
 
 		protected virtual void Awake() => _unit = GetComponent<Unit>();
 
+		public abstract string Name { get; }
+
 		protected virtual void StartAction(Action onActionCompleted)
 		{
 			IsActive = true;
@@ -25,5 +27,6 @@ namespace SW
 			IsActive = false;
 			_onActionComplete();
 		}
+
 	}
 }

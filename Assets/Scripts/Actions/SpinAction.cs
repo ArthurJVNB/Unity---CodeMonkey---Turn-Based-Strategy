@@ -11,6 +11,8 @@ namespace SW
 		private float _spinAmount;
 		private float _totalSpinAmount = float.MaxValue;
 
+		public override string Name => "Spin";
+
 		private void Update()
 		{
 			if (!IsActive)

@@ -8,25 +8,49 @@ namespace SW
 	[RequireComponent(typeof(MouseWorld))]
 	public class UnitActionSystem : MonoBehaviour
 	{
+		#region Singleton
+		private static UnitActionSystem _instance;
+
+		public static UnitActionSystem Instance
+		{
+			get
+			{
+				if (!_instance)
+					_instance = new GameObject(nameof(UnitActionSystem)).AddComponent<UnitActionSystem>();
+				return _instance;
+			}
+		}
+		#endregion
+
 		public static event EventHandler OnChangedSelectedUnit;
-		public static Unit CurrentSelectedUnit { get; private set; }
+		//public static Unit CurrentSelectedUnit { get; private set; }
 		public static BaseAction[] CurrentActions { get; private set; }
+
+
 
 		[SerializeField] private Unit _selectedUnit;
 
 		private MouseWorld _mouse;
 		private bool _isBusy = false;
+		private BaseAction _selectedAction;
 
-		public Unit SelectedUnit
+		public static Unit SelectedUnit
 		{
-			get => _selectedUnit;
+			get => Instance._selectedUnit;
 			private set
 			{
-				_selectedUnit = value;
-				CurrentSelectedUnit = value;
+				Instance._selectedUnit = value;
+				//CurrentSelectedUnit = value;
 				CurrentActions = value.GetComponents<BaseAction>();
-				OnChangedSelectedUnit?.Invoke(this, EventArgs.Empty);
+				SelectedAction = value.TryGetMoveAction(out MoveAction moveAction) ? moveAction : null;
+				OnChangedSelectedUnit?.Invoke(Instance, EventArgs.Empty);
 			}
+		}
+
+		public static BaseAction SelectedAction
+		{
+			get => Instance._selectedAction;
+			set => Instance._selectedAction = value;
 		}
 
 		private void OnValidate()
@@ -36,6 +60,7 @@ namespace SW
 
 		private void Awake()
 		{
+			_instance = this;
 			CheckInstancesInScene();
 			SelectedUnit = _selectedUnit;
 			_mouse = GetComponent<MouseWorld>();
@@ -48,12 +73,8 @@ namespace SW
 			if (Input.GetMouseButtonDown(0))
 			{
 				if (TrySelectUnit()) return;
-				TryMoveSelectedUnit();
-			}
 
-			if (Input.GetMouseButtonDown(1))
-			{
-				TrySpinSelectedUnit();
+				HandleSelectedAction();
 			}
 		}
 
@@ -66,6 +87,19 @@ namespace SW
 			UnitActionSystem[] instances = FindObjectsByType<UnitActionSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 			if (instances.Length > 1)
 				Debug.LogWarning($"There's more than one UnitActionSystem!");
+		}
+
+		private void HandleSelectedAction()
+		{
+			switch (SelectedAction)
+			{
+				case MoveAction:
+					TryMoveSelectedUnit();
+					break;
+				case SpinAction:
+					TrySpinSelectedUnit();
+					break;
+			}
 		}
 
 		/// <summary>

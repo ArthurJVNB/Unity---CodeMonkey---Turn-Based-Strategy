@@ -34,7 +34,7 @@ namespace SW
 
 		private void UpdateVisual()
 		{
-			_meshRenderer.enabled = UnitActionSystem.CurrentSelectedUnit == _unit;
+			_meshRenderer.enabled = UnitActionSystem.SelectedUnit == _unit;
 		}
 	}
 }

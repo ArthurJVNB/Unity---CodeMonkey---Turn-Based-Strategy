@@ -32,7 +32,7 @@ namespace SW
 
 		private void OnClick()
 		{
-
+			UnitActionSystem.SelectedAction = _action;
 		}
 	}
 }

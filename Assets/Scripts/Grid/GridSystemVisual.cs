@@ -49,7 +49,7 @@ namespace SW.Grid
 
 		private void UpdateGridVisual()
 		{
-			if (UnitActionSystem.CurrentSelectedUnit.TryGetMoveAction(out MoveAction moveAction))
+			if (UnitActionSystem.SelectedUnit.TryGetMoveAction(out MoveAction moveAction))
 			{
 				HideAllPositions();
 				ShowPositions(moveAction.ValidGridPositions);

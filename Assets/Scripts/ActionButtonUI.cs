@@ -32,7 +32,10 @@ namespace SW
 
 		private void OnClick()
 		{
-			UnitActionSystem.SelectedAction = _action;
+			if (UnitActionSystem.SelectedAction == _action)
+				UnitActionSystem.DeselectCurrentAction();
+			else
+				UnitActionSystem.SelectedAction = _action;
 		}
 	}
 }

@@ -1,7 +1,10 @@
+using SW.Grid;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace SW
 {
@@ -42,7 +45,8 @@ namespace SW
 				Instance._selectedUnit = value;
 				//CurrentSelectedUnit = value;
 				CurrentActions = value.GetComponents<BaseAction>();
-				SelectedAction = value.TryGetMoveAction(out MoveAction moveAction) ? moveAction : null;
+				//SelectedAction = value.TryGetMoveAction(out MoveAction moveAction) ? moveAction : null;
+				SelectedAction = null;
 				OnChangedSelectedUnit?.Invoke(Instance, EventArgs.Empty);
 			}
 		}
@@ -52,6 +56,8 @@ namespace SW
 			get => Instance._selectedAction;
 			set => Instance._selectedAction = value;
 		}
+
+		public static void DeselectCurrentAction() => Instance._selectedAction = null;
 
 		private void OnValidate()
 		{
@@ -69,6 +75,8 @@ namespace SW
 		private void Update()
 		{
 			if (_isBusy) return;
+
+			if (EventSystem.current.IsPointerOverGameObject()) return;
 
 			if (Input.GetMouseButtonDown(0))
 			{
@@ -91,15 +99,20 @@ namespace SW
 
 		private void HandleSelectedAction()
 		{
-			switch (SelectedAction)
-			{
-				case MoveAction:
-					TryMoveSelectedUnit();
-					break;
-				case SpinAction:
-					TrySpinSelectedUnit();
-					break;
-			}
+			//switch (SelectedAction)
+			//{
+			//	case MoveAction:
+			//		TryMoveSelectedUnit();
+			//		break;
+			//	case SpinAction:
+			//		TrySpinSelectedUnit();
+			//		break;
+			//}
+			if (SelectedAction == null) return;
+
+			GridPosition mouseGridPosition = LevelGrid.GetGridPosition(_mouse.WorldPosition);
+			if (SelectedAction.TakeAction(mouseGridPosition, ClearBusy))
+				SetBusy();
 		}
 
 		/// <summary>
@@ -125,24 +138,24 @@ namespace SW
 			return result;
 		}
 
-		private void TryMoveSelectedUnit()
-		{
-			if (_selectedUnit)
-				if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
-				{
-					SetBusy();
-					moveAction.Move(_mouse.WorldPosition, ClearBusy);
-				}
-		}
+		//private void TryMoveSelectedUnit()
+		//{
+		//	if (_selectedUnit)
+		//		if (_selectedUnit.TryGetMoveAction(out MoveAction moveAction))
+		//		{
+		//			SetBusy();
+		//			moveAction.TakeAction(LevelGrid.GetGridPosition(_mouse.WorldPosition), ClearBusy);
+		//		}
+		//}
 
-		private void TrySpinSelectedUnit()
-		{
-			if (_selectedUnit)
-				if (_selectedUnit.TryGetComponent(out SpinAction spinAction))
-				{
-					SetBusy();
-					spinAction.Spin(ClearBusy);
-				}
-		}
+		//private void TrySpinSelectedUnit()
+		//{
+		//	if (_selectedUnit)
+		//		if (_selectedUnit.TryGetComponent(out SpinAction spinAction))
+		//		{
+		//			SetBusy();
+		//			spinAction.TakeAction(ClearBusy);
+		//		}
+		//}
 	}
 }

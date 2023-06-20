@@ -17,7 +17,9 @@ namespace SW
 
 		public bool IsMoving { get; private set; }
 
-		public List<GridPosition> ValidGridPositions
+		public override string Name => "Move";
+
+		public override List<GridPosition> ValidGridPositions
 		{
 			get
 			{
@@ -48,13 +50,6 @@ namespace SW
 
 				return _validGridPositions;
 			}
-		}
-
-		public override string Name => "Move";
-
-		public bool IsValidPosition(GridPosition gridPosition)
-		{
-			return ValidGridPositions.Contains(gridPosition);
 		}
 
 		protected override void Awake()
@@ -111,12 +106,7 @@ namespace SW
 
 		}
 
-		public bool Move(Vector3 targetPosition, Action onActionComplete)
-		{
-			return Move(LevelGrid.GetGridPosition(targetPosition), onActionComplete);
-		}
-
-		public bool Move(GridPosition targetGridPosition, Action onActionComplete)
+		public override bool TakeAction(GridPosition targetGridPosition, Action onActionComplete)
 		{
 			StartAction(onActionComplete);
 

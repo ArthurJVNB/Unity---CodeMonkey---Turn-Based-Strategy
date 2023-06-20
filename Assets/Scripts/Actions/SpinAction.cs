@@ -1,3 +1,4 @@
+using SW.Grid;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,8 +11,20 @@ namespace SW
 		private Quaternion _targetRotation;
 		private float _spinAmount;
 		private float _totalSpinAmount = float.MaxValue;
+		private List<GridPosition> _validGridPositions;
 
 		public override string Name => "Spin";
+
+		public override List<GridPosition> ValidGridPositions
+		{
+			get
+			{
+				_validGridPositions ??= new();
+				_validGridPositions.Clear();
+				_validGridPositions.Add(UnitActionSystem.SelectedUnit.CurrentGridPosition);
+				return _validGridPositions;
+			}
+		}
 
 		private void Update()
 		{
@@ -33,9 +46,10 @@ namespace SW
 			transform.eulerAngles += new Vector3(0, _spinAmount, 0);
 		}
 
-		public void Spin(Action onActionComplete)
+		public override bool TakeAction(GridPosition _, Action onActionComplete)
 		{
 			StartAction(onActionComplete);
+			return true;
 		}
 
 		protected override void StartAction(Action onActionCompleted)

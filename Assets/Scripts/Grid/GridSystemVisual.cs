@@ -49,11 +49,16 @@ namespace SW.Grid
 
 		private void UpdateGridVisual()
 		{
-			if (UnitActionSystem.SelectedUnit.TryGetMoveAction(out MoveAction moveAction))
-			{
-				HideAllPositions();
-				ShowPositions(moveAction.ValidGridPositions);
-			}
+			//if (UnitActionSystem.SelectedUnit.TryGetMoveAction(out MoveAction moveAction))
+			//{
+			//	HideAllPositions();
+			//	ShowPositions(moveAction.ValidGridPositions);
+			//}
+			HideAllPositions();
+			if (UnitActionSystem.SelectedAction == null) return;
+			List<GridPosition> validGridPositions = UnitActionSystem.SelectedAction.ValidGridPositions;
+			if (validGridPositions == null) return;
+			ShowPositions(validGridPositions);
 		}
 	}
 }

@@ -11,19 +11,27 @@ namespace SW
 		private GridPosition _lastGridPosition;
 		private MoveAction _moveAction;
 
+		public MoveAction MoveAction
+		{
+			get
+			{
+				if (_moveAction == null)
+					_moveAction = GetComponent<MoveAction>();
+				return _moveAction;
+			}
+		}
+
 		public GridPosition CurrentGridPosition => _lastGridPosition;
 
 		private void Start()
 		{
 			_lastGridPosition = LevelGrid.GetGridPosition(transform.position);
 			LevelGrid.AddUnitAtGridPosition(this, _lastGridPosition);
-
-			_moveAction = GetComponent<MoveAction>();
 		}
 
 		public bool TryGetMoveAction(out MoveAction moveAction)
 		{
-			moveAction = _moveAction;
+			moveAction = MoveAction;
 			return moveAction != null;
 		}
 

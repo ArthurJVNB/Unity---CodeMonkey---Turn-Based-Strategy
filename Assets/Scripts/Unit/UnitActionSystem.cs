@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -26,16 +27,8 @@ namespace SW
 		#endregion
 
 		public static event EventHandler OnChangedSelectedUnit;
-		//public static Unit CurrentSelectedUnit { get; private set; }
+		public static event EventHandler OnChangedSelectedAction;
 		public static BaseAction[] CurrentActions { get; private set; }
-
-
-
-		[SerializeField] private Unit _selectedUnit;
-
-		private MouseWorld _mouse;
-		private bool _isBusy = false;
-		private BaseAction _selectedAction;
 
 		public static Unit SelectedUnit
 		{
@@ -43,21 +36,44 @@ namespace SW
 			private set
 			{
 				Instance._selectedUnit = value;
-				//CurrentSelectedUnit = value;
-				CurrentActions = value.GetComponents<BaseAction>();
-				//SelectedAction = value.TryGetMoveAction(out MoveAction moveAction) ? moveAction : null;
-				SelectedAction = null;
-				OnChangedSelectedUnit?.Invoke(Instance, EventArgs.Empty);
+				if (value != null)
+				{
+					CurrentActions = value.GetComponents<BaseAction>();
+					if (_instance._tryGetMoveActionOnSelection)
+						SelectedAction = value.TryGetMoveAction(out MoveAction moveAction) ? moveAction : null;
+					else
+						SelectedAction = null;
+				}
+				else
+				{
+					CurrentActions = null;
+					SelectedAction = null;
+				}
+
+				OnChangedSelectedUnit?.Invoke(_instance, EventArgs.Empty);
 			}
 		}
 
 		public static BaseAction SelectedAction
 		{
 			get => Instance._selectedAction;
-			set => Instance._selectedAction = value;
+			set
+			{
+				Instance._selectedAction = value;
+				OnChangedSelectedAction?.Invoke(_instance, EventArgs.Empty);
+			}
 		}
 
-		public static void DeselectCurrentAction() => Instance._selectedAction = null;
+		public static void DeselectCurrentAction() => SelectedAction = null;
+
+
+
+		[SerializeField] private Unit _selectedUnit;
+		[SerializeField] private bool _tryGetMoveActionOnSelection = true;
+
+		private MouseWorld _mouse;
+		private bool _isBusy = false;
+		private BaseAction _selectedAction;
 
 		private void OnValidate()
 		{

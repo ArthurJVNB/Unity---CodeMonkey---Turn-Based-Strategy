@@ -8,6 +8,10 @@ namespace SW
 {
 	public class Unit : MonoBehaviour
 	{
+		[SerializeField] private int _actionPoints = 4;
+		[SerializeField] private int _maxActionPoints = 8;
+
+		public int ActionPoints => _actionPoints;
 		private GridPosition _lastGridPosition;
 		private MoveAction _moveAction;
 
@@ -45,10 +49,27 @@ namespace SW
 			}
 		}
 
-		public override string ToString()
+		public bool TrySpendActionPoints(BaseAction baseAction)
 		{
-			return name;
+			if (CanSpendActionPoints(baseAction))
+			{
+				SpendActionPoints(baseAction);
+				return true;
+			}
+			return false;
 		}
+
+		public bool CanSpendActionPoints(BaseAction baseAction)
+		{
+			return _actionPoints >= baseAction.ActionCost;
+		}
+
+		public void SpendActionPoints(BaseAction baseAction)
+		{
+			_actionPoints -= Mathf.Clamp(baseAction.ActionCost, 0, _maxActionPoints);
+		}
+
+		public override string ToString() => name;
 
 	}
 }

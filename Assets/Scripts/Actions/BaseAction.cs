@@ -8,14 +8,20 @@ namespace SW
 {
 	public abstract class BaseAction : MonoBehaviour
 	{
-		[field: SerializeField]
-		public bool IsActive { get; private set; }
+		[field: SerializeField] public bool IsActive { get; private set; }
+
 		protected Unit _unit;
 		private Action _onActionComplete;
 
+		public abstract string Name { get; }
+		public virtual int ActionCost => 1;
+
 		protected virtual void Awake() => _unit = GetComponent<Unit>();
 
-		public abstract string Name { get; }
+		public virtual bool CanTakeAction(GridPosition gridPosition)
+		{
+			return IsValidPosition(gridPosition);
+		}
 
 		public abstract bool TakeAction(GridPosition gridPosition, Action onActionComplete);
 

@@ -15,6 +15,8 @@ namespace SW
 
 		public override string Name => "Spin";
 
+		public override int ActionCost => 2;
+
 		public override List<GridPosition> ValidGridPositions
 		{
 			get
@@ -44,6 +46,11 @@ namespace SW
 			}
 
 			transform.eulerAngles += new Vector3(0, _spinAmount, 0);
+		}
+
+		public override bool CanTakeAction(GridPosition _)
+		{
+			return true;
 		}
 
 		public override bool TakeAction(GridPosition _, Action onActionComplete)

@@ -1,3 +1,4 @@
+using SW.Args;
 using SW.Grid;
 using System;
 using System.Collections;
@@ -26,8 +27,21 @@ namespace SW
 		}
 		#endregion
 
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+		private static void ResetStatic()
+		{
+			_instance = null;
+			OnChangedSelectedUnit = null;
+			OnChangedSelectedAction = null;
+			OnChangedBusy = null;
+			OnActionStarted = null;
+		}
+
 		public static event EventHandler OnChangedSelectedUnit;
 		public static event EventHandler OnChangedSelectedAction;
+		public static event EventHandler<BusyArgs> OnChangedBusy;
+		//public static event EventHandler<SpentActionPointArgs> OnSpentActionPoints;
+		public static event EventHandler OnActionStarted;
 		public static BaseAction[] CurrentActions { get; private set; }
 
 		public static Unit SelectedUnit
@@ -66,7 +80,7 @@ namespace SW
 
 		public static void DeselectCurrentAction() => SelectedAction = null;
 
-
+		public static bool IsBusy => Instance._isBusy;
 
 		[SerializeField] private Unit _selectedUnit;
 		[SerializeField] private bool _tryGetMoveActionOnSelection = true;
@@ -102,9 +116,17 @@ namespace SW
 			}
 		}
 
-		private void SetBusy() => _isBusy = true;
+		private void SetBusy()
+		{
+			_isBusy = true;
+			OnChangedBusy?.Invoke(this, new BusyArgs() { IsBusy = _isBusy });
+		}
 
-		private void ClearBusy() => _isBusy = false;
+		private void ClearBusy()
+		{
+			_isBusy = false;
+			OnChangedBusy?.Invoke(this, new BusyArgs() { IsBusy = _isBusy });
+		}
 
 		private void CheckInstancesInScene()
 		{
@@ -127,8 +149,17 @@ namespace SW
 			if (SelectedAction == null) return;
 
 			GridPosition mouseGridPosition = LevelGrid.GetGridPosition(_mouse.WorldPosition);
-			if (SelectedAction.TakeAction(mouseGridPosition, ClearBusy))
+
+			if (!SelectedAction.CanTakeAction(mouseGridPosition)) return;
+			
+			if (SelectedUnit.TrySpendActionPoints(SelectedAction))
+			{
 				SetBusy();
+				//OnSpentActionPoints?.Invoke(this, new SpentActionPointArgs(_selectedUnit, _selectedAction.ActionCost, _selectedUnit.ActionPoints));
+				SelectedAction.TakeAction(mouseGridPosition, ClearBusy);
+				OnActionStarted?.Invoke(this, EventArgs.Empty);
+			}
+
 		}
 
 		/// <summary>

@@ -10,6 +10,7 @@ namespace SW
 	{
 		[SerializeField] private ActionButtonUI _actionButtonPrefab;
 		[SerializeField] private Transform _actionButtonContainerTransform;
+		[SerializeField] private TextMeshProUGUI _actionPointsText;
 
 		private List<ActionButtonUI> _actionButtons;
 
@@ -22,10 +23,15 @@ namespace SW
 		{
 			UnitActionSystem.OnChangedSelectedUnit += UnitActionSystem_OnChangedSelectedUnit;
 			UnitActionSystem.OnChangedSelectedAction += UnitActionSystem_OnChangedSelectedAction;
+			UnitActionSystem.OnActionStarted += UnitActionSystem_OnActionStarted;
 
 			if (UnitActionSystem.CurrentActions != null)
 				CreateUnitActions();
-			else ClearActions();
+			else
+			{
+				ClearActions();
+				ClearActionPoints();
+			}
 		}
 
 		private void OnDestroy()
@@ -38,11 +44,17 @@ namespace SW
 		{
 			CreateUnitActions();
 			UpdateSelectedVisual();
+			UpdateActionPoints();
 		}
 
 		private void UnitActionSystem_OnChangedSelectedAction(object sender, System.EventArgs e)
 		{
 			UpdateSelectedVisual();
+		}
+
+		private void UnitActionSystem_OnActionStarted(object sender, System.EventArgs e)
+		{
+			UpdateActionPoints();
 		}
 
 		private void CreateUnitActions()
@@ -76,6 +88,22 @@ namespace SW
 				else
 					action.Deselect();
 			}
+		}
+
+		private void UpdateActionPoints()
+		{
+			Unit selectedUnit = UnitActionSystem.SelectedUnit;
+			if (selectedUnit)
+			{
+				_actionPointsText.gameObject.SetActive(true);
+				_actionPointsText.text = $"Action Points: {selectedUnit.ActionPoints}";
+			}
+			else ClearActionPoints();
+		}
+
+		private void ClearActionPoints()
+		{
+			_actionPointsText.gameObject.SetActive(false);
 		}
 	}
 }
